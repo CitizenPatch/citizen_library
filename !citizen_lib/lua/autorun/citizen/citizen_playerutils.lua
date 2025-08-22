@@ -18,7 +18,7 @@ function citizen.FindPlayer(uid)
     return nil
 end
 
-function _PLY:UID()
+function _PLY:ID()
     return self:SteamID()
 end
 
@@ -26,7 +26,7 @@ if CLIENT then
     citizen.OldLocalPlayer = citizen.OldLocalPlayer or LocalPlayer
     citizen.LocalPlayer = citizen.LocalPlayer or LocalPlayer()
 
-    hook('InitPostEntity', 'citizen.ParseLocalPlayer', function()
+    hook('InitPostEntity', 'citizen>ParseLocalPlayer', function()
         local ply = LocalPlayer()
         citizen.LocalPlayer = ply
         

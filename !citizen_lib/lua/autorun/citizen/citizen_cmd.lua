@@ -47,7 +47,7 @@ function citizen.cmd.New(name, func, cooldown, argsLang)
     citizen.cmd.Storage[name] = obj
 
     cmd(name, function(ply, _, args)
-        local uid = ply:UID()
+        local uid = ply:ID()
 
         if obj.cooldown > 0 then
             local last = citizen.cmd.Cooldowns[uid] and citizen.cmd.Cooldowns[uid][name] or 0
@@ -120,7 +120,7 @@ function cmdMeta:AddAlias(new)
     }
 
     cmd(new, function(ply, _, args)
-        local uid = ply:UID()
+        local uid = ply:ID()
 
         if self.cooldown > 0 then
             local last = citizen.cmd.Cooldowns[uid] and citizen.cmd.Cooldowns[uid][new] or 0

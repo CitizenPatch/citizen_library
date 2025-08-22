@@ -19,14 +19,14 @@ setmetatable(hook, {
     __call = function(_, event, name, func)
         if not func then
             func = name
-            name = tostring(CurTime())
+            name = citizen.f('Citizen>Hook>{s}', tostring(util.CRC(CurTime())))
         end
         
         return hook.Add(event, name, func)
     end
 })
 
-function rgb(r, g, b, a)
+function citizen.rgb(r, g, b, a)
     r = (r / 255) ^ (1 / 2.2) * 255
     b = (b / 255) ^ (1 / 2.2) * 255
     g = (g / 255) ^ (1 / 2.2) * 255
@@ -50,7 +50,6 @@ function citizen.RandomString(len)
 
     return str
 end
-
 
 function citizen.Log(...)
     local args = {...}
