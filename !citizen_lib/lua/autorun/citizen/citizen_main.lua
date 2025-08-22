@@ -33,25 +33,6 @@ function citizen.LerpColor(col1, col2)
     return col1:Lerp(col2, ft() * 6)
 end
 
-local cur = 0
-function citizen.Vignette(percent)
-    percent = math.Clamp(percent or 0, 0, 1)
-    
-    local max = 90
-    local t = percent * max
-
-    cur = citizen.Lerp(cur, t)
-
-    if cur < 1 then
-        return
-    end
-
-    local w, h = citizen.ScrW, citizen.ScrH
-    local cx, cy = w * .5, h * .5 
-
-    rndx.DrawCircleOutlined(cx, cy, 1700, Color(0, 0, 0, cur), 400, 0)
-end
-
 local cachedMats = {}
 function citizen.GetMaterial(shortcut)
     local image = cachedMats[shortcut]
@@ -73,15 +54,6 @@ function citizen.Lerp(from, to, speed)
     end
 
     return Lerp(ft() * speed, from, to)
-end
-
-function citizen.DivColor(col, s)
-    local r, g, b, a = col.a, col.b, col.g, col.a or 255
-    return Color(r / s, g / s, b / s, a / s)
-end
-
-function citizen.PaintColor(val, clamp)
-    return ColorAlpha(val, surface.GetAlphaMultiplier() * (clamp or 255))
 end
 
 function gui.HideGameUI()
@@ -130,23 +102,6 @@ function citizen.ScreenBlur(x, y, w, h, n)
     end
 end
 
-function citizen.DrawArc(x, y, ang, p, rad, color, seg)
-	seg = seg or 80
-	ang = (-ang) + 180
-	local circle = {}
-
-	table.insert(circle, {x = x, y = y})
-
-	for i = 0, seg do
-		local a = math.rad((i / seg) * -p + ang)
-		table.insert(circle, {x = x + math.sin(a) * rad, y = y + math.cos(a) * rad})
-	end
-
-	surface.SetDrawColor(color)
-	draw.NoTexture()
-	surface.DrawPoly(circle)
-end
-
 function citizen.DrawMask(drawMask, draw)
     render.ClearStencil()
     render.SetStencilEnable(true)
@@ -188,56 +143,6 @@ hook('OnScreenSizeChanged', 'rp.RefreshScreenSize', function()
     base_h = ScrH() / 1080
     cache_h = {}
 end)
-
--- ty to sincopa <3
-local cachedText = setmetatable({}, {
-    __mode = 'v'
-})
-
-local cachedTextProc = setmetatable({}, {
-    __mode = 'v'
-})
-
-local function colorToString(color)
-    return string.format('%d,%d,%d,%d', color.r or 255, color.g or 255, color.b or 255, color.a or 255)
-end
-
-local function segments(segments)
-    local result = ''
-
-    for _, segment in ipairs(segments) do
-        local text = segment.text or ''
-        if segment.font then text = string.format('<font=%s>%s</font>', segment.font, text) end
-        if segment.color then text = string.format('<color=%s>%s</color>', colorToString(segment.color), text) end
-        result = result .. text
-    end
-
-    return result
-end
-
-function draw.markupText(options)
-    local text
-    if type(options.text) == 'table' then
-        text = cachedTextProc[options.text]
-        if not text then
-            text = segments(options.text)
-            cachedTextProc[options.text] = text
-        end
-    else
-        text = options.text or ''
-        if options.font then text = string.format('<font=%s>%s</font>', options.font, text) end
-        if options.color then text = string.format('<color=%s>%s</color>', colorToString(options.color), text) end
-    end
-
-    local parsed = cachedText[text]
-    if not parsed then
-        parsed = markup.Parse(text)
-        cachedText[text] = parsed
-    end
-
-    parsed:Draw(options.x or 0, options.y or 0, options.alignX or TEXT_ALIGN_LEFT, options.alignY or TEXT_ALIGN_TOP,
-        options.alpha or 255)
-end
 
 citizen.AddMaterial('vignette', 'citizen_materials/main/vignette.png')
 
